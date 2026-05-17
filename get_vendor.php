@@ -17,8 +17,8 @@ if (empty($vendor_id)) {
 
 $sql = "SELECT v.VENDOR_ID, v.VENDOR_NAME, v.VENDOR_OWNER, v.VENDOR_STATE, 
                v.VENDOR_CITY, v.VENDOR_STREET, v.JOIN_DATE, vp.VENDOR_PHONE
-        FROM ECommerceproj.Vendor v
-        LEFT JOIN ECommerceproj.VendorPhone vp ON v.VENDOR_ID = vp.VENDOR_ID
+        FROM Vendor v
+        LEFT JOIN VendorPhone vp ON v.VENDOR_ID = vp.VENDOR_ID
         WHERE v.VENDOR_ID = :vendor_id";
 
 $stmt = oci_parse($conn, $sql);
@@ -26,8 +26,8 @@ oci_bind_by_name($stmt, ':vendor_id', $vendor_id);
 oci_execute($stmt);
 
 $orderSql = "SELECT COUNT(DISTINCT op.ORDER_NO) as ORDER_COUNT
-             FROM ECommerceproj.orderproducts op
-             JOIN ECommerceproj.product p ON op.PRODUCT_ID = p.PRODUCT_ID
+             FROM orderproducts op
+             JOIN product p ON op.PRODUCT_ID = p.PRODUCT_ID
              WHERE p.VENDOR_ID = :vendor_id";
 
 $orderStmt = oci_parse($conn, $orderSql);
@@ -39,7 +39,7 @@ $orderCount = $orderRow['ORDER_COUNT'];
 oci_free_statement($orderStmt);
 
 $productSql = "SELECT COUNT(*) as PRODUCT_COUNT
-               FROM ECommerceproj.product
+               FROM product
                WHERE VENDOR_ID = :vendor_id";
 
 $productStmt = oci_parse($conn, $productSql);
@@ -51,7 +51,7 @@ $productCount = $productRow['PRODUCT_COUNT'];
 oci_free_statement($productStmt);
 
 $ratingSql = "SELECT AVG(p.RATING) as AVG_RATING
-              FROM ECommerceproj.product p
+              FROM product p
               WHERE p.VENDOR_ID = :vendor_id
               AND p.RATING IS NOT NULL";
 
@@ -59,17 +59,6 @@ $ratingStmt = oci_parse($conn, $ratingSql);
 oci_bind_by_name($ratingStmt, ':vendor_id', $vendor_id);
 oci_execute($ratingStmt);
 $ratingRow = oci_fetch_assoc($ratingStmt);
-
-$ratingSql = "SELECT AVG(p.RATING) as AVG_RATING
-              FROM ECommerceproj.product p
-              WHERE p.VENDOR_ID = :vendor_id
-              AND p.RATING IS NOT NULL";
-
-$ratingStmt = oci_parse($conn, $ratingSql);
-oci_bind_by_name($ratingStmt, ':vendor_id', $vendor_id);
-oci_execute($ratingStmt);
-$ratingRow = oci_fetch_assoc($ratingStmt);
-
 
 $avgRating = $ratingRow['AVG_RATING'] !== null
     ? round((float)$ratingRow['AVG_RATING'], 2)

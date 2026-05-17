@@ -6,21 +6,15 @@ require_once 'config/db_connect.php';
 
 $customer_id = $_GET['customer_id'];
 
-$sql = "
-SELECT
-    o.ORDER_NO,
-    SUM(op.QUANTITY) AS PRODUCT_COUNT,
-    SUM(op.QUANTITY * p.PRODUCT_PRICE) AS TOTAL_PRICE,
-    o.ORDER_DATE
-FROM ORDERS o
-JOIN ORDERPRODUCTS op
-    ON o.ORDER_NO = op.ORDER_NO
-JOIN PRODUCT p
-    ON op.PRODUCT_ID = p.PRODUCT_ID
-WHERE o.CUSTOMER_ID = :customer_id
-GROUP BY o.ORDER_NO, o.ORDER_DATE
-ORDER BY o.ORDER_NO DESC
-";
+$sql = "SELECT o.ORDER_NO,SUM(op.QUANTITY) AS PRODUCT_COUNT,
+        SUM(op.QUANTITY * p.PRODUCT_PRICE) AS TOTAL_PRICE,
+        o.ORDER_DATE
+        FROM ORDERS o
+        JOIN ORDERPRODUCTS op ON o.ORDER_NO = op.ORDER_NO
+        JOIN PRODUCT p ON op.PRODUCT_ID = p.PRODUCT_ID
+        WHERE o.CUSTOMER_ID = :customer_id
+        GROUP BY o.ORDER_NO, o.ORDER_DATE
+        ORDER BY o.ORDER_NO DESC ";
 
 $stid = oci_parse($conn, $sql);
 

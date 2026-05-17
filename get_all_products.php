@@ -4,11 +4,11 @@ header("Content-Type: application/json");
 
 require_once 'config/db_connect.php';
 
-$vendor_id = $_GET['vendor_id'] ?? '';
+$category = $_GET['category'] ?? '';
 
-if (empty($vendor_id)) {
+if (empty($category)) {
     http_response_code(400);
-    echo json_encode(["error" => "Missing vendor_id parameter"]);
+    echo json_encode(["error" => "Missing category parameter"]);
     exit;
 }
 
@@ -18,11 +18,11 @@ $sql = "SELECT PRODUCT_ID,PRODUCT_NAME,STOCK,
         VIEWS,PRODUCT_SUBCATEGORY,
         PRODUCT_CATEGORY, VENDOR_ID
         FROM PRODUCT 
-        WHERE VENDOR_ID = :vendor_id
-        ORDER BY PRODUCT_ID DESC ";
+        WHERE PRODUCT_CATEGORY = :category
+        ORDER BY PRODUCT_ID DESC";
 
 $stid = oci_parse($conn, $sql);
-oci_bind_by_name($stid, ":vendor_id", $vendor_id);
+oci_bind_by_name($stid, ":category", $category);
 
 if (!oci_execute($stid)) {
     echo json_encode(["error" => "Failed to execute query"]);
@@ -51,5 +51,4 @@ echo json_encode($products);
 
 oci_free_statement($stid);
 oci_close($conn);
-
 ?>

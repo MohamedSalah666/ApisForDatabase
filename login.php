@@ -24,8 +24,8 @@ if ($account && $account['ACCOUNT_PASSWORD'] === $password) {
         "account_id"       => $account['ACCOUNT_ID'],
         "account_name"     => $account['ACCOUNT_NAME'],
         "account_type"     => (int)$account['ACCOUNT_TYPE'],
-        "vendor_id"        => $account['VENDOR_ID'],
-        "customer_id"      => $account['CUSTOMER_ID'],
+        "vendor_id"        => $account['VENDOR_ID'] !== null ? (int)$account['VENDOR_ID'] : null,
+        "customer_id"      => $account['CUSTOMER_ID'] !== null ? (int)$account['CUSTOMER_ID'] : null,
         "account_password" => null
     ]);
 } else {

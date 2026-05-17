@@ -58,7 +58,7 @@ if ($accountType === 0) {
 
     if (!oci_execute($accountStmt, OCI_NO_AUTO_COMMIT)) {
         $e = oci_error($accountStmt);
-        oci_rollback($conn); // rolls back customer insert too
+        oci_rollback($conn);
         http_response_code(500);
         echo json_encode(["error" => "Account insert failed: " . $e['message']]);
         oci_free_statement($accountStmt);

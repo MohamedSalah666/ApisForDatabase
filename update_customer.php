@@ -18,7 +18,7 @@ $customerState  = $data->customer_state  ?? null;
 $customerCity   = $data->customer_city   ?? null;
 $customerStreet = $data->customer_street ?? null;
 
-$conn = oci_connect("ECommerceproj", "Projectfager", "localhost/XEPDB1");
+require_once 'config/db_connect.php';
 
 if (!$conn) {
     http_response_code(500);

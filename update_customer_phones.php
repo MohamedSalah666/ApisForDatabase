@@ -14,7 +14,7 @@ $customerId     = (int)$data->customer_id;
 $phones         = $data->phones           ?? [];
 $phonesToDelete = $data->phones_to_delete ?? [];
 
-$conn = oci_connect("ECommerceproj", "Projectfager", "localhost/XEPDB1");
+require_once 'config/db_connect.php';
 
 if (!$conn) {
     http_response_code(500);

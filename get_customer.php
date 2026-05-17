@@ -17,8 +17,8 @@ if (empty($customer_id)) {
 
 $sql = "SELECT c.CUSTOMER_ID, c.CUSTOMER_NAME, c.CUSTOMER_STATE,
                c.CUSTOMER_CITY, c.CUSTOMER_STREET, c.JOIN_DATE, cp.CUSTOMER_PHONE
-        FROM ECommerceproj.Customer c
-        LEFT JOIN ECommerceproj.CustomerPhone cp ON c.CUSTOMER_ID = cp.CUSTOMER_ID
+        FROM Customer c
+        LEFT JOIN CustomerPhone cp ON c.CUSTOMER_ID = cp.CUSTOMER_ID
         WHERE c.CUSTOMER_ID = :customer_id";
 
 $stmt = oci_parse($conn, $sql);
@@ -26,7 +26,7 @@ oci_bind_by_name($stmt, ':customer_id', $customer_id);
 oci_execute($stmt);
 
 $orderSql = "SELECT COUNT(ORDER_NO) as ORDER_COUNT
-             FROM ECommerceproj.Orders 
+             FROM Orders 
              WHERE CUSTOMER_ID = :customer_id";
 
 $orderStmt = oci_parse($conn, $orderSql);
@@ -37,8 +37,8 @@ $orderCount = $orderRow['ORDER_COUNT'] !== null ? (int)$orderRow['ORDER_COUNT'] 
 oci_free_statement($orderStmt);
 
 $itemsSql = "SELECT SUM(op.QUANTITY) as ITEM_COUNT
-             FROM ECommerceproj.orderproducts op
-             JOIN ECommerceproj.Orders o ON op.ORDER_NO = o.ORDER_NO
+             FROM orderproducts op
+             JOIN Orders o ON op.ORDER_NO = o.ORDER_NO
              WHERE o.CUSTOMER_ID = :customer_id";
 
 $itemsStmt = oci_parse($conn, $itemsSql);
@@ -67,7 +67,7 @@ $phones = [];
 while ($row = oci_fetch_assoc($stmt)) {
     if ($customerData === null) {
         $customerData = [
-            "customer_id"     => $row['CUSTOMER_ID'],
+            "customer_id"     => (int)$row['CUSTOMER_ID'],
             "customer_name"   => $row['CUSTOMER_NAME'],
             "customer_state"  => $row['CUSTOMER_STATE'],
             "customer_city"   => $row['CUSTOMER_CITY'],
